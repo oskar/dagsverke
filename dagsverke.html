@@ -1,0 +1,60 @@
+<html>
+<head>
+<style>
+input, #work_time { font-size: 2em; font-family: Verdana; }
+</style>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<title>Dagsverke</title>
+</head>
+<body>
+<table>
+  <tr>
+    <td>Kom</td>
+    <td><input type="time" id="start_time" /></td>
+  </tr>
+  <tr>
+    <td>Gick</td>
+    <td><input type="time" id="end_time" /></td>
+  </tr>
+  <tr>
+    <td>Lunch</td>
+    <td><input type="text" id="lunch" value="60"/></td>
+  </tr>
+  <tr>
+    <td>Arbetstid</td>
+    <td><div id="work_time"></div></td>
+  </tr>
+</table>
+
+<script>
+function parse() {
+  var start = $('#start_time').val();
+  var end = $('#end_time').val();
+  var lunch = $('#lunch').val();
+  
+  var startInMinutes = toMinutes(start);
+  var endInMinutes = toMinutes(end);
+  
+  var workInMinutes = endInMinutes - startInMinutes - lunch;
+  
+  if(isNaN(workInMinutes))
+    return;
+  
+  var workTime = Math.round(workInMinutes * 100 / 60) / 100;
+  var workHours = Math.floor(workInMinutes / 60);
+  var workMinutes = workInMinutes % 60;
+  
+  $('#work_time').text(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
+}
+
+function toMinutes(str) {
+  var arr = str.split(':');
+  return parseInt(arr[0], 10) * 60 + parseInt(arr[1], 10);
+}
+
+$('#start_time').change(parse);
+$('#end_time').change(parse);
+$('#lunch').change(parse);
+</script>
+</body>
+</html>
