@@ -1,30 +1,44 @@
 <html>
 <head>
 <style>
-input, #work_time { font-size: 2em; font-family: Verdana; }
+h1, p, input, #work_time { font-size: 2em; font-family: Verdana; }
+#lunch { width: 2em; }
+#work_time { width: 10em; }
+#content { width: 350px; margin-left: auto; margin-right: auto; }
+h1 { font-size: 3em; text-align: center; }
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <title>Dagsverke</title>
 </head>
 <body>
-<table>
-  <tr>
-    <td>Kom</td>
-    <td><input type="time" id="start_time" /></td>
-  </tr>
-  <tr>
-    <td>Gick</td>
-    <td><input type="time" id="end_time" /></td>
-  </tr>
-  <tr>
-    <td>Lunch</td>
-    <td><input type="text" id="lunch" value="60"/></td>
-  </tr>
-  <tr>
-    <td>Arbetstid</td>
-    <td><div id="work_time"></div></td>
-  </tr>
-</table>
+<div id="content">
+  <h1>Dagsverke</h1>
+  <table>
+    <tr>
+      <td><p>Kom</p></td>
+      <td class="middle-column">&nbsp;</td>
+      <td><input type="time" id="start_time" /></td>
+    </tr>
+    <tr>
+      <td><p>Gick</p></td>
+      <td class="middle-column">&nbsp;</td>
+      <td><input type="time" id="end_time" /></td>
+    </tr>
+    <tr>
+      <td><p>Lunch</p></td>
+      <td class="middle-column">&nbsp;</td>
+      <td><input type="text" id="lunch" value="60"/></td>
+    </tr>
+    <tr>
+      <td colspan="3"><p>&nbsp;</p></td>
+    </tr>
+    <tr>
+      <td><p>Arbetstid</p></td>
+      <td class="middle-column">&nbsp;</td>
+      <td><input type="text" disabled id="work_time"></div></td>
+    </tr>
+  </table>
+</div>
 
 <script>
 function parse() {
@@ -44,7 +58,7 @@ function parse() {
   var workHours = Math.floor(workInMinutes / 60);
   var workMinutes = workInMinutes % 60;
   
-  $('#work_time').text(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
+  $('#work_time').val(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
 }
 
 function toMinutes(str) {
