@@ -2,9 +2,8 @@
 <head>
 <style>
 h1, p, input, #work_time { font-size: 2em; font-family: Verdana; }
-#lunch { width: 2em; }
-#work_time { width: 10em; }
-#content { width: 350px; margin-left: auto; margin-right: auto; }
+input { width: 10em; }
+#content { width: 485px; margin-left: auto; margin-right: auto; }
 h1 { font-size: 3em; text-align: center; }
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -62,8 +61,18 @@ function parse() {
 }
 
 function toMinutes(str) {
-  var arr = str.split(':');
-  return parseInt(arr[0], 10) * 60 + parseInt(arr[1], 10);
+
+  if(str.length == 5) {
+    var arr = str.split(':');
+    var hours = arr[0];
+    var minutes = arr[1];
+  }
+  else if(str.length == 4) {
+    var hours = str.substring(0, 2);
+    var minutes = str.substring(2, 4);
+  }
+  
+  return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
 }
 
 $('#start_time').change(parse);
