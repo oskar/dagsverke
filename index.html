@@ -1,49 +1,72 @@
-<html>
-<head>
-<style>
-h1, p, input, #work_time { font-size: 2em; font-family: Verdana; }
-input { width: 10em; }
-#content { width: 485px; margin-left: auto; margin-right: auto; }
-h1 { font-size: 3em; text-align: center; }
-</style>
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<title>Dagsverke</title>
-</head>
-<body>
-<div id="content">
-  <h1>Dagsverke</h1>
-  <table>
-    <tr>
-      <td><p>Kom</p></td>
-      <td class="middle-column">&nbsp;</td>
-      <td><input type="time" id="start_time" /></td>
-    </tr>
-    <tr>
-      <td><p>Gick</p></td>
-      <td class="middle-column">&nbsp;</td>
-      <td><input type="time" id="end_time" /></td>
-    </tr>
-    <tr>
-      <td><p>Lunch</p></td>
-      <td class="middle-column">&nbsp;</td>
-      <td><input type="text" id="lunch" value="60"/></td>
-    </tr>
-    <tr>
-      <td colspan="3"><p>&nbsp;</p></td>
-    </tr>
-    <tr>
-      <td><p>Arbetstid</p></td>
-      <td class="middle-column">&nbsp;</td>
-      <td><input type="text" disabled id="work_time"></div></td>
-    </tr>
-  </table>
-</div>
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Basic time tracking tool">
+    <meta name="author" content="Oskar Hermansson">
+    <link rel="shortcut icon" href="favicon.ico">
 
-<script>
+    <title>Dagsverke</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="dagsverke.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Dagsverke </h1>
+        <p class="lead">Basic time tracking tool <span class="glyphicon glyphicon-time"></span></p>
+        <p>Calculate the length of your work day by entering the time when you came to work, how long break you had and when you left work.</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="inputTimeOfArrival">Time of arrival [HH:mm]</label>
+            <input type="text" class="form-control" id="inputTimeOfArrival" placeholder="HH:mm"/>
+            <p class="help-block">Enter the time when you came to work.</p>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="inputBreak">Break [minutes]</label>
+            <input type="text" class="form-control" id="inputBreak" placeholder="Minutes" value="60"/>
+            <p class="help-block">Enter time of break (lunch or other) in minutes.</p>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="inputTimeOfLeaving">Time of leaving [HH:mm]</label>
+            <input type="text" class="form-control" id="inputTimeOfLeaving" placeholder="HH:mm"/>
+            <p class="help-block">Enter the time when you left work.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <h1><span class="glyphicon glyphicon-chevron-right"></span> <span id="calculatedWorkTime"></span></h1>
+      </div>
+    </div> <!-- /container -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    
+    <!-- Bootstrap core JavaScript goes here if needed -->
+    
+    
+    <script>
 function parse() {
-  var start = $('#start_time').val();
-  var end = $('#end_time').val();
-  var lunch = $('#lunch').val();
+  var start = $('#inputTimeOfArrival').val();
+  var end = $('#inputTimeOfLeaving').val();
+  var lunch = $('#inputBreak').val();
   
   var startInMinutes = toMinutes(start);
   var endInMinutes = toMinutes(end);
@@ -57,7 +80,7 @@ function parse() {
   var workHours = Math.floor(workInMinutes / 60);
   var workMinutes = workInMinutes % 60;
   
-  $('#work_time').val(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
+  $('#calculatedWorkTime').text(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
 }
 
 function toMinutes(str) {
@@ -75,9 +98,9 @@ function toMinutes(str) {
   return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
 }
 
-$('#start_time').change(parse);
-$('#end_time').change(parse);
-$('#lunch').change(parse);
+$('#inputTimeOfArrival').change(parse);
+$('#inputTimeOfLeaving').change(parse);
+$('#inputBreak').change(parse);
 </script>
-</body>
+  </body>
 </html>
