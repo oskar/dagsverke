@@ -29,15 +29,18 @@
         <div class="col-md-4">
           <div class="form-group">
             <label for="inputTimeOfArrival">Time of arrival [HH:mm]</label>
-            <input type="text" class="form-control" id="inputTimeOfArrival" placeholder="HH:mm"/>
-            <p class="help-block">Enter the time when you came to work.</p>
+            <div class="input-group">
+              <input type="number" class="form-control" id="inputTimeOfArrival" placeholder="Enter the time when you came to work."/>
+              <span class="input-group-addon" id="inputTimeOfArrivalAddon">HH:mm</span>
+            </div>
+            <p class="help-block"></p>
           </div>
         </div>
         
         <div class="col-md-4">
           <div class="form-group">
             <label for="inputBreak">Break [minutes]</label>
-            <input type="text" class="form-control" id="inputBreak" placeholder="Minutes" value="60"/>
+            <input type="number" class="form-control" id="inputBreak" placeholder="Minutes" value="60"/>
             <p class="help-block">Enter time of break (lunch or other) in minutes.</p>
           </div>
         </div>
@@ -45,7 +48,10 @@
         <div class="col-md-4">
           <div class="form-group">
             <label for="inputTimeOfLeaving">Time of leaving [HH:mm]</label>
-            <input type="text" class="form-control" id="inputTimeOfLeaving" placeholder="HH:mm"/>
+            <div class="input-group">
+              <input type="number" class="form-control" id="inputTimeOfLeaving" placeholder="HH:mm"/>
+              <span class="input-group-addon" id="inputTimeOfLeavingAddon">HH:mm</span>
+            </div>
             <p class="help-block">Enter the time when you left work.</p>
           </div>
         </div>
@@ -59,8 +65,10 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     
-    <!-- Bootstrap core JavaScript goes here if needed -->
+    <!-- Moment.js to parse time -->
+    <script src="js/moment.min.js"></script>
     
+    <!-- Bootstrap core JavaScript goes here if needed -->
     
     <script>
 function parse() {
@@ -68,19 +76,67 @@ function parse() {
   var end = $('#inputTimeOfLeaving').val();
   var lunch = $('#inputBreak').val();
   
-  var startInMinutes = toMinutes(start);
-  var endInMinutes = toMinutes(end);
+  var m_start = parseTime(start);
+  var m_end = parseTime(end);
+  var d_lunch = moment.duration(parseInt(lunch, 10), 'minutes');
   
-  var workInMinutes = endInMinutes - startInMinutes - lunch;
+  if(typeof m_start === 'object') {
+    $('#inputTimeOfArrivalAddon').text(m_start.format('HH:mm'));
+  }
+  else {
+    $('#inputTimeOfArrivalAddon').text('HH:mm');
+  }
   
-  if(isNaN(workInMinutes))
-    return;
+  if(typeof m_end === 'object') {
+    $('#inputTimeOfLeavingAddon').text(m_end.format('HH:mm'));
+  }
+  else {
+    $('#inputTimeOfLeavingAddon').text('HH:mm');
+  }
   
-  var workTime = Math.round(workInMinutes * 100 / 60) / 100;
-  var workHours = Math.floor(workInMinutes / 60);
-  var workMinutes = workInMinutes % 60;
+  if(typeof m_start === 'object' && typeof m_end === 'object' && typeof d_lunch === 'object') {
+    var m_work = m_end.subtract(d_lunch).subtract(m_start);
+    $('#calculatedWorkTime').text(m_work.format('HH[h] mm[m]')); // [] escapes
+  }
+  else {
+    $('#calculatedWorkTime').text('');
+  }
   
-  $('#calculatedWorkTime').text(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
+  //var workInMinutes = endInMinutes - startInMinutes - lunch;
+  
+  //if(isNaN(workInMinutes))
+  //  return;
+  
+  //var workTime = Math.round(workInMinutes * 100 / 60) / 100;
+  //var workHours = Math.floor(workInMinutes / 60);
+  //var workMinutes = workInMinutes % 60;
+  
+  //$('#calculatedWorkTime').text(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
+}
+
+function parseTime(str) {
+  // formats to parse:
+  // - HH:mm
+  // - HHmm
+  // - HH
+  
+  // start of today
+  var m = moment().startOf('day');
+  
+  if(str.length == 5 && str[2] == ':') { // todo: replace with regex?
+    var arr = str.split(':'); // todo: replace with substring?
+    return m.add('hours', arr[0]).add('minutes', arr[1]);
+  }
+  
+  if(str.length == 4) { // todo: replace with regex?
+    var hours = str.substring(0, 2);
+    var minutes = str.substring(2, 4);
+    return m.add('hours', hours).add('minutes', minutes);
+  }
+  
+  if(str.length == 2) { // todo: replace with regex?
+    return m.add('hours', str);
+  }
 }
 
 function toMinutes(str) {
