@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
     <meta name="description" content="Basic time tracking tool">
     <meta name="author" content="Oskar Hermansson">
+    
     <link rel="shortcut icon" href="favicon.ico">
 
     <title>Dagsverke</title>
@@ -101,41 +104,39 @@ function parse() {
   else {
     $('#calculatedWorkTime').text('');
   }
-  
-  //var workInMinutes = endInMinutes - startInMinutes - lunch;
-  
-  //if(isNaN(workInMinutes))
-  //  return;
-  
-  //var workTime = Math.round(workInMinutes * 100 / 60) / 100;
-  //var workHours = Math.floor(workInMinutes / 60);
-  //var workMinutes = workInMinutes % 60;
-  
-  //$('#calculatedWorkTime').text(workHours + 'h ' + workMinutes + 'min (' + workTime + ')');
 }
 
 function parseTime(str) {
-  // formats to parse:
-  // - HH:mm
-  // - HHmm
-  // - HH
-  
   // start of today
   var m = moment().startOf('day');
   
-  if(str.length == 5 && str[2] == ':') { // todo: replace with regex?
-    var arr = str.split(':'); // todo: replace with substring?
-    return m.add('hours', arr[0]).add('minutes', arr[1]);
+  // format: HH:mm
+  if(/^\d{2}:\d{2}$/.test(str)) {
+    var hours = parseInt(str.substring(0, 2), 10);
+    var minutes = parseInt(str.substring(3, 5), 10);
+    
+    if(hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
+      return m.add('hours', hours).add('minutes', minutes);
+    }
+  }
+
+  // format: HHmm
+  if(/^\d{4}$/.test(str)) {
+    var hours = parseInt(str.substring(0, 2), 10);
+    var minutes = parseInt(str.substring(2, 4), 10);
+    
+    if(hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
+      return m.add('hours', hours).add('minutes', minutes);
+    }
   }
   
-  if(str.length == 4) { // todo: replace with regex?
-    var hours = str.substring(0, 2);
-    var minutes = str.substring(2, 4);
-    return m.add('hours', hours).add('minutes', minutes);
-  }
-  
-  if(str.length == 2) { // todo: replace with regex?
-    return m.add('hours', str);
+  // format: HH
+  if(/^\d{2}$/.test(str)) {
+    var hours = parseInt(str, 10);
+    
+    if(hours >= 0 && hours < 24) {
+      return m.add('hours', str);
+    }
   }
 }
 
